@@ -2,7 +2,6 @@
 	double linked list reverse
 	This problem requires you to reverse a doubly linked list
 */
-// I AM NOT DONE
 
 use std::fmt::{self, Display, Formatter};
 use std::ptr::NonNull;
@@ -72,9 +71,59 @@ impl<T> LinkedList<T> {
             },
         }
     }
+    #[allow(unused)]
 	pub fn reverse(&mut self){
 		// TODO
+        // 修改每一个结点的prev和next指针
+        // 策略：先判断每一个结点的next指针是否是None
+        //       然后将prev和next指针对调，沿着prev向后检索，重复以上步骤
+        let mut start_ptr = self.start;
+
+        while start_ptr.is_some() {
+            match start_ptr {
+                Some(value) => {
+                    // 交换node的pre和next指针
+                    let node_prev = unsafe { value.as_ref()}.prev;
+                    let node_next = unsafe { value.as_ref()}.next;
+                    // 问题卡在怎么给这种复杂，包裹了很多层，还涉及到智能指针的值进行改变
+                    // NonNull as_ptr获取底层的*mut指针
+                    // NonNull as_ref返回该值的共享引用
+                    unsafe { (*value.as_ptr()).prev = node_next };
+                    unsafe { (*value.as_ptr()).next = node_prev };
+                    // 改变start_ptr指针的指向
+                    start_ptr = node_next;
+                }
+                None => {
+                    break;
+                }
+            }
+        }
+
+        let end_ptr = self.end;
+        self.start = end_ptr;
+        self.end = start_ptr;
 	}
+    // pub fn reverse(&mut self) {
+    //     let mut current = self.start;
+    
+    //     // 反转链表
+    //     while let Some(node) = current {
+    //         // 获取当前节点的下一个节点
+    //         let next_node = unsafe { (*node.as_ptr()).next };
+    
+    //         // 交换当前节点的 next 和 prev 指针
+    //         unsafe {
+    //             (*node.as_ptr()).next = (*node.as_ptr()).prev;
+    //             (*node.as_ptr()).prev = next_node;
+    //         }
+    
+    //         // 移动到下一个节点（原来的前一个节点）
+    //         current = next_node;
+    //     }
+    
+    //     // 交换 start 和 end 指针
+    //     std::mem::swap(&mut self.start, &mut self.end);
+    // }
 }
 
 impl<T> Display for LinkedList<T>

@@ -2,7 +2,6 @@
 	single linked list merge
 	This problem requires you to merge two ordered singly linked lists into one ordered singly linked list
 */
-// I AM NOT DONE
 
 use std::fmt::{self, Display, Formatter};
 use std::ptr::NonNull;
@@ -69,15 +68,101 @@ impl<T> LinkedList<T> {
             },
         }
     }
-	pub fn merge(list_a:LinkedList<T>,list_b:LinkedList<T>) -> Self
-	{
+
+    fn result_add(&mut self, value : T) -> () {
+        self.add(value);
+    }
+
+    #[allow(unused)]
+    // 其实这算法是有问题的
+	pub fn merge(mut list_a:LinkedList<T>,mut list_b:LinkedList<T>) -> Self
+        where   T: Copy + PartialOrd
+    {
 		//TODO
-		Self {
-            length: 0,
-            start: None,
-            end: None,
+        let mut result : LinkedList<T> = LinkedList::new();
+        // NonNull as_ptr获取底层的*mut指针
+        // NonNull as_ref返回该值的共享引用
+        let mut a_start = list_a.start;
+        let mut b_start = list_b.start;
+        while a_start.is_some() || b_start.is_some() {
+            match (a_start, b_start){
+                (Some(a), Some(b)) => {
+                    let a_value = unsafe {a.as_ref() }.val;
+                    let b_value = unsafe {b.as_ref() }.val;
+                    if a_value > b_value{
+                        result.add(b_value);
+                        b_start = unsafe {b.as_ref() }.next;
+                    } else {
+                        result.add(a_value);
+                        a_start = unsafe {a.as_ref() }.next;
+                    }
+                }
+                (Some(a), None) => {
+                    let a_value = unsafe {a.as_ref() }.val;
+                    result.add(a_value);
+                    a_start = unsafe {a.as_ref() }.next;
+                }
+                (None, Some(b)) => {
+                    let b_value = unsafe {b.as_ref() }.val;
+                    result.add(b_value);
+                    b_start = unsafe {b.as_ref() }.next;      
+                }
+                (None, None) => {
+
+                }
+            }
         }
+        result
 	}
+//     pub fn merge(mut list_a:LinkedList<T>,mut list_b:LinkedList<T>) -> Self
+//     where   T: Copy + PartialOrd + Debug
+// {
+//     //TODO
+//     let mut all_element : LinkedList<T> = LinkedList::new();
+//     let mut result : LinkedList<T> = LinkedList::new();
+//     // NonNull as_ptr获取底层的*mut指针
+//     // NonNull as_ref返回该值的共享引用
+//     let all_length = list_a.length + list_b.length;
+//     println!("all_length : {:?}", all_length);
+//     for i in 0..all_length {
+//         if i < list_a.length {
+//             println!("i : {:?}", i);
+//             all_element.add(*list_a.get(i as i32).unwrap());
+//         }else {
+//             println!("i - list_a.length : {:?}", i - list_a.length);
+//             println!("i : {:?}", i);
+//             all_element.add(*list_b.get(i as i32 - list_a.length as i32).unwrap());
+//         }
+//     }
+
+//     //list_a排序
+//     let list_start = all_element.start;
+//     let mut min = -1;
+//     let mut min_record;
+//     for i in 0..all_element.length {
+//         // 获取min的值，完成min的递增操作
+//         min += 1;
+//         min_record = min;
+//         let mut min_value = *all_element.get(min).unwrap();
+//         println!("min_value : {:?}", min_value);
+//         for j in min + 1..all_element.length as i32 {
+//             // 获取j的值
+//             let j_index_value = *all_element.get(j).unwrap();
+
+//             // 让j的值和min的值进行比较
+//             if(min_value > j_index_value) {
+//                 min_value = j_index_value;
+//                 min_record = j;
+//             }
+//         }
+//         // 让index j和index min交换
+//         if min_record != min {
+            // 交换太难写了
+//         }
+//         //result.add(min_value);
+//     }
+//     result
+// }
 }
 
 impl<T> Display for LinkedList<T>
@@ -110,7 +195,8 @@ mod tests {
 
     #[test]
     fn create_numeric_list() {
-        let mut list = LinkedList::<i32>::new();
+        //let mut list = LinkedList::<i32>::new();
+        let mut list : LinkedList<i32> = LinkedList::new();
         list.add(1);
         list.add(2);
         list.add(3);

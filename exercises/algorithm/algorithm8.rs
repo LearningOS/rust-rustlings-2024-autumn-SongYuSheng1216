@@ -2,7 +2,6 @@
 	queue
 	This question requires you to use queues to implement the functionality of the stac
 */
-// I AM NOT DONE
 
 #[derive(Debug)]
 pub struct Queue<T> {
@@ -22,14 +21,14 @@ impl<T> Queue<T> {
 
     pub fn dequeue(&mut self) -> Result<T, &str> {
         if !self.elements.is_empty() {
-            Ok(self.elements.remove(0usize))
+            Ok(self.elements.remove(0usize))    // 是什么？
         } else {
             Err("Queue is empty")
         }
     }
 
     pub fn peek(&self) -> Result<&T, &str> {
-        match self.elements.first() {
+        match self.elements.first() {           // 是什么？
             Some(value) => Ok(value),
             None => Err("Queue is empty"),
         }
@@ -68,15 +67,61 @@ impl<T> myStack<T> {
     }
     pub fn push(&mut self, elem: T) {
         //TODO
+        self.q1.enqueue(elem);
     }
-    pub fn pop(&mut self) -> Result<T, &str> {
+    pub fn pop(&mut self) -> Result<T, &str> 
+        where T : Copy
+    {
         //TODO
+        while self.q1.size() > 1 {
+            match self.q1.dequeue() {
+                Ok(value) => self.q2.enqueue(value),
+                Err(_) => (),
+            }
+        }
+        let mut flag = false;
+        if self.q1.size() == 1 {
+            flag = true;
+        }
+        while !self.q2.is_empty() {
+            match self.q2.dequeue() {
+                Ok(value) => self.q1.enqueue(value),
+                Err(_) => (),
+            }
+        }
+        if flag == true {
+            return self.q1.dequeue();
+        }
 		Err("Stack is empty")
     }
     pub fn is_empty(&self) -> bool {
 		//TODO
-        true
+        if self.q1.is_empty() && self.q2.is_empty() {
+            return true;
+        }
+        false
     }
+    // pub fn push(&mut self, elem: T) {
+    //     // 将新元素放入q2中
+    //     self.q2.enqueue(elem);
+
+    //     // 将q1中的所有元素转移到q2中
+    //     while let Ok(val) = self.q1.dequeue() {
+    //         self.q2.enqueue(val);
+    //     }
+
+    //     // 交换q1和q2
+    //     std::mem::swap(&mut self.q1, &mut self.q2);
+    // }
+
+    // pub fn pop(&mut self) -> Result<T, &str> {
+    //     // 从q1中出队（即弹出栈顶元素）
+    //     self.q1.dequeue()
+    // }
+
+    // pub fn is_empty(&self) -> bool {
+    //     self.q1.is_empty()
+    // }
 }
 
 #[cfg(test)]

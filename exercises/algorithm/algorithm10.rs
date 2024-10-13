@@ -2,7 +2,6 @@
 	graph
 	This problem requires you to implement a basic graph functio
 */
-// I AM NOT DONE
 
 use std::collections::{HashMap, HashSet};
 use std::fmt;
@@ -16,6 +15,7 @@ impl fmt::Display for NodeNotInGraph {
 pub struct UndirectedGraph {
     adjacency_table: HashMap<String, Vec<(String, i32)>>,
 }
+
 impl Graph for UndirectedGraph {
     fn new() -> UndirectedGraph {
         UndirectedGraph {
@@ -28,8 +28,20 @@ impl Graph for UndirectedGraph {
     fn adjacency_table(&self) -> &HashMap<String, Vec<(String, i32)>> {
         &self.adjacency_table
     }
+    // fn add_edge(&mut self, edge: (&str, &str, i32)) {
+    //     //TODO
+    //     self.adjacency_table_mutable().insert(edge.0.to_string(), vec![(edge.1.to_string(),edge.2)]);
+    //     self.adjacency_table_mutable().insert(edge.1.to_string(), vec![(edge.0.to_string(),edge.2)]);
+    // }
     fn add_edge(&mut self, edge: (&str, &str, i32)) {
-        //TODO
+        // 插入边的两个方向
+        self.adjacency_table_mutable().entry(edge.0.to_string())
+            .or_insert_with(Vec::new)
+            .push((edge.1.to_string(), edge.2));
+        
+        self.adjacency_table_mutable().entry(edge.1.to_string())
+            .or_insert_with(Vec::new)
+            .push((edge.0.to_string(), edge.2));
     }
 }
 pub trait Graph {
@@ -78,6 +90,7 @@ mod test_undirected_graph {
             (&String::from("c"), &String::from("b"), 10),
         ];
         for edge in expected_edges.iter() {
+            println!("1");
             assert_eq!(graph.edges().contains(edge), true);
         }
     }

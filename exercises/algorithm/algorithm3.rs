@@ -3,11 +3,40 @@
 	This problem requires you to implement a sorting algorithm
 	you can use bubble sorting, insertion sorting, heap sorting, etc.
 */
-// I AM NOT DONE
 
-fn sort<T>(array: &mut [T]){
-	//TODO
+fn sort<T: PartialOrd + PartialEq + Copy>(array: &mut [T]){
+    // select sort
+
+    // let mut min = 0;
+    // let mut min_value = array[0];
+    // for i in 0..array.len(){
+    //     for j in i + 1..array.len(){
+    //         if array[min] > array[j] {
+    //             min = j;
+    //             min_value = array[j];
+    //         }
+    //     }
+    //     println!("min : {}", min);
+    //     if min != i{
+    //         array[min] = array[i];
+    //         array[i] = min_value;
+    //     }
+    //     min = i + 1;
+    // }
+
+    // bubble sort
+    let num = array.len();
+    for i in 0..num {
+        for j in 0..num -1 - i {
+            if array[j] > array[j+1] {
+                array.swap(j, j+1);
+            }
+        }
+    }
+
 }
+
+
 #[cfg(test)]
 mod tests {
     use super::*;

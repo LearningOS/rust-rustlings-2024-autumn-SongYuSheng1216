@@ -8,16 +8,18 @@
 // Execute `rustlings hint traits3` or use the `hint` watch subcommand for a
 // hint.
 
-// I AM NOT DONE
-
 pub trait Licensed {
-    fn licensing_info(&self) -> String;
+    fn licensing_info(&self) -> String{
+        String::from("Some information")
+    }
 }
 
+#[derive(Debug,PartialEq)]
 struct SomeSoftware {
     version_number: i32,
 }
 
+#[derive(Debug,PartialEq)]
 struct OtherSoftware {
     version_number: String,
 }
